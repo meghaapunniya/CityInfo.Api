@@ -1,4 +1,6 @@
-﻿using CityInfo.Api.Models;
+﻿using AutoMapper;
+using CityInfo.Api.Models;
+using CityInfo.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.Api.Controllers
@@ -7,33 +9,42 @@ namespace CityInfo.Api.Controllers
     [Route("api/cities")]
     public class CitiesController : ControllerBase
     {
-        private readonly CitiesDataStore _citiesDataStore;
+        private readonly ICityInfoRepository _cityInfoRepository;
+        private readonly IMapper _mapper;
 
-        public CitiesController(CitiesDataStore citiesDataStore)
+        public CitiesController(ICityInfoRepository cityInfoRepository,
+            IMapper mapper)
         {
-            _citiesDataStore = citiesDataStore?? throw new ArgumentNullException(nameof(citiesDataStore)); 
+           _cityInfoRepository = cityInfoRepository ??
+                throw new ArgumentNullException(nameof(cityInfoRepository));
+            _mapper = mapper ?? 
+                throw new ArgumentNullException(nameof(mapper));
         }
         
         [HttpGet]
-        public ActionResult<IEnumerable<CityDto>> GetCities()
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities()
         {
-            return Ok (_citiesDataStore.Cities); 
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync();
+
+            return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));
         }
+
+
         [HttpGet("{id}")]
 
         public ActionResult<CityDto>GetCity(int id)
         {
-            //findCity
-            var cityToReturn = _citiesDataStore.Cities
-                .FirstOrDefault(c => c.id == id);
-            
-            if (cityToReturn == null)
-            {
-                return NotFound();
-            }
+            ////findCity
+            //var cityToReturn = _citiesDataStore.Cities
+            //    .FirstOrDefault(c => c.id == id);
 
-            return Ok(cityToReturn);
-                
+            //if (cityToReturn == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return Ok(cityToReturn);
+            return Ok();   
         }
     }
 

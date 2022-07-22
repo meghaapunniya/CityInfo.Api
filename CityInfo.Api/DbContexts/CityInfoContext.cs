@@ -14,6 +14,70 @@ namespace CityInfo.Api.DbContexts
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<City>()
+                .HasData(
+               new City("New York City")
+               {
+                   Id = 1,
+                   Description = "The one with that big park."
+               },
+               new City("Antwerp")
+               {
+                   Id = 2,
+                   Description = "The one with the cathedral that was never really finished."
+               },
+
+               new City("Paris")
+               {
+                   Id = 3,
+                   Description = "The one with that big tower."
+               });
+
+            modelBuilder.Entity<PointOfInterest>()
+                .HasData(
+                new PointOfInterest("Central Park")
+                {
+                    id = 1,
+                    CityId = 1,
+                    Description = "The most visited urban park in the United States."
+                },
+                new PointOfInterest("Empire State Building")
+                {
+                    id = 2,
+                    CityId = 1,
+                    Description = "A 102-story skyscrapper located in MidTown Manhattan."
+                },
+                new PointOfInterest("Cathedral")
+                {
+                    id = 3,
+                    CityId = 2,
+                    Description = "The gothic-style cathedral,conceived by architects.."
+                },
+                new PointOfInterest("Antwerp Central Station")
+                {
+                    id = 4,
+                    CityId = 2,
+                    Description = "The finest example of railway architecture in Belgium."
+                },
+                new PointOfInterest("Eiffel tower")
+                {
+                    id = 5,
+                    CityId = 3,
+                    Description = "a wrought iron lattice tower on the champ de Mars,named Eiffel tower."
+                },
+                new PointOfInterest("The Louvre")
+                {
+                    id = 6,
+                    CityId = 3,
+                    Description = "The world's largest museum."
+                });
+               
+                base.OnModelCreating(modelBuilder);
+        }
+
+
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    optionsBuilder.UseSqlite("connectionstring");
