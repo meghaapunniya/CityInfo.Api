@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CityInfo.Api.Models;
 using CityInfo.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.Api.Controllers
 {
-    [Route("api/cities/{cityid}/pointsofinterest")]
+    [Route("api/v{version:apiVersion}/cities/{cityid}/pointsofinterest")]
+    [Authorize(Policy ="MustBeFromAntwerp")]
+    [ApiVersion("2.0")]
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
@@ -36,7 +39,15 @@ namespace CityInfo.Api.Controllers
         public async Task<ActionResult<IEnumerable<PointOfInterestDto>>> GetPointsOfInterest(
             int cityId)
         {
-           if(!await _cityInfoRepository.CityExistsAsync(cityId))
+           // var cityName = User.Claims.FirstOrDefault(c => c.Type == "city")?.Value;
+            
+           //if(!await _cityInfoRepository.CityNameMatchesCityId(cityName, cityId))
+           // {
+           //     return Forbid();
+           // }
+          
+            
+            if(!await _cityInfoRepository.CityExistsAsync(cityId))
             {
                 _logger.LogInformation(
                     $"City with id {cityId} wasn't found when accessing points of interest.");
